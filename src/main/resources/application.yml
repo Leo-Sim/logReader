@@ -1,0 +1,14 @@
+
+
+config:
+  # read all log files that has format of .txt
+  dir-path: /Users/Heesu/Documents/file/log
+
+  servers:
+    - ip: 127.0.0.1
+      port: 112
+      protocol: TCP
+
+    - ip: 127.0.0.1
+      port: 222
+      protocol: UDP
