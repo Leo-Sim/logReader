@@ -4,6 +4,10 @@ config:
   # read all log files that has format of .txt
   dir-path: /Users/Heesu/Documents/file/log
 
+  # read json files that has multiple values for each field.
+  # Then, read random value for each field and create log text.
+  custom-log-path: /Users/Heesu/Documents/file/customLog
+
   servers:
     - ip: 127.0.0.1
       port: 112

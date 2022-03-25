@@ -18,6 +18,7 @@ import java.util.Map;
 public class LogReaderConfig {
 
     private String dirPath;
+    private String customLogPath;
 
     @NestedConfigurationProperty
     private List<Destination> servers;
