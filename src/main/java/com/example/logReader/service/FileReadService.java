@@ -2,6 +2,7 @@ package com.example.logReader.service;
 
 import com.example.logReader.config.LogReaderConfig;
 import com.example.logReader.reader.AbstractFileReader;
+import com.example.logReader.reader.ReaderForCustom;
 import com.example.logReader.reader.ReaderForText;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -39,7 +40,8 @@ public class FileReadService {
        }
         // if custom log path is exist, read all files in it, make logs and send it to servers
        if(StringUtils.hasText(customPath)) {
-
+            AbstractFileReader reader = new ReaderForCustom(customPath);
+            reader.readFilesInDirectory(getReadConsumer());
        }
 
     }

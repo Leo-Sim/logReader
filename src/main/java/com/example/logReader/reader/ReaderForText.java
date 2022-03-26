@@ -23,14 +23,16 @@ public class ReaderForText extends AbstractFileReader {
     @Override
     public void readFilesInDirectory(Consumer<List<String>> consumer) {
 
-        super.getFileList().stream().forEach(f -> {
-            Path fPath = Paths.get(f);
+        super.getFileList().stream()
+                .filter(f ->f.endsWith(".txt"))
+                .forEach(f -> {
+                    Path fPath = Paths.get(f);
 
-            Flux<List<String>> sFlux = Flux.using(() -> Files.lines(fPath), Flux::fromStream, Stream::close)
-                    .doOnNext(s -> logger.debug("Log in file {} : {}", f, s))
-                    .bufferTimeout(BufferInfo.READ_BUFFER_SIZE, BufferInfo.READ_BUFFER_DURATION_SECOND);
+                    Flux<List<String>> sFlux = Flux.using(() -> Files.lines(fPath), Flux::fromStream, Stream::close)
+                            .doOnNext(s -> logger.debug("Log in file {} : {}", f, s))
+                            .bufferTimeout(BufferInfo.READ_BUFFER_SIZE, BufferInfo.READ_BUFFER_DURATION_SECOND);
 
-            sFlux.subscribe(consumer);
-        });
+                    sFlux.subscribe(consumer);
+                });
     }
 }

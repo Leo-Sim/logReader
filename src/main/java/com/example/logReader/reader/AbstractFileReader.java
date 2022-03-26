@@ -45,7 +45,6 @@ abstract public class AbstractFileReader {
             try {
                 Files.walk(path)
                         .filter(Files::isRegularFile)
-                        .filter(f -> getFileName(f).endsWith(".txt"))
                         .forEach(f -> {
                             list.add(getFileName(f));
                         });
