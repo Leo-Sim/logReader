@@ -59,7 +59,7 @@ public class ReaderForCustom extends AbstractFileReader{
     @Override
     public void readFilesInDirectory(Consumer<List<String>> consumer) {
         Flux<List<String>> flux = createLogSink.asFlux().bufferTimeout(BufferInfo.SEND_BUFFER_SIZE, BufferInfo.SEND_BUFFER_DURATION_SECOND);
-        flux.subscribe(consumer);
+        flux.doOnNext(s -> logger.debug("create random log : {}", s)).subscribe(consumer);
 
         super.getFileList().stream()
                 .filter(f -> f.endsWith(".json"))
@@ -67,23 +67,28 @@ public class ReaderForCustom extends AbstractFileReader{
                     Path fPath = Paths.get(f);
 
                     StringBuilder sb = new StringBuilder();
-                    Flux.using(() -> Files.lines(fPath), Flux::fromStream, Stream::close).subscribe(s -> sb.append(s));
+                    Flux.using(() -> Files.lines(fPath), Flux::fromStream, Stream::close)
+                            .doOnNext(s -> sb.append(s))
+                            .doOnComplete(() -> {
+                                logger.info("Read custom log info from {}", f);
 
-                    // Convert string into map.
-                    ObjectMapper mapper = new ObjectMapper();
-                    Map<String, Object> map = null;
-                    try {
-                        map = (LinkedHashMap) mapper.readValue(sb.toString(), Map.class);
+                                // Convert string into map.
+                                ObjectMapper mapper = new ObjectMapper();
+                                Map<String, Object> map = null;
+                                try {
+                                    map = (LinkedHashMap) mapper.readValue(sb.toString(), Map.class);
 
-                        int speed = Integer.parseInt((String) map.getOrDefault(KEY_SPEED, DEFAULT_COUNT_SPEED));
-                        String delimiter = (String) map.get(KEY_DELIMITER);
-                        LinkedHashMap<String, List<String>> colMap = (LinkedHashMap) map.get(KEY_COLUMS);
+                                    int speed = Integer.parseInt((String) map.getOrDefault(KEY_SPEED, DEFAULT_COUNT_SPEED));
+                                    String delimiter = (String) map.get(KEY_DELIMITER);
+                                    LinkedHashMap<String, List<String>> colMap = (LinkedHashMap) map.get(KEY_COLUMS);
 
-                        createAndPushRandomLogs(delimiter, colMap, speed);
+                                    createAndPushRandomLogs(delimiter, colMap, speed);
 
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
+                                } catch (JsonProcessingException e) {
+                                    e.printStackTrace();
+                                }
+                            }).subscribe();
+//
                 });
     }
 
@@ -111,6 +116,11 @@ public class ReaderForCustom extends AbstractFileReader{
         });
     }
 
+    /**
+     * create random log
+     * @param delimiter
+     * @param map
+     * */
     private String createLog(String delimiter, LinkedHashMap<String, List<String>> map) {
         return map.entrySet().stream()
                 .map(entry -> {

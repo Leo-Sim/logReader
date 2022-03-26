@@ -24,7 +24,7 @@ public class SendService {
         lineSink = Sinks.many().unicast().onBackpressureBuffer();
         flux = lineSink.asFlux().bufferTimeout(BufferInfo.SEND_BUFFER_SIZE, BufferInfo.SEND_BUFFER_DURATION_SECOND);
         flux.subscribe(s -> {
-            
+            System.out.println("s : " + s);
         });
     }
 }
