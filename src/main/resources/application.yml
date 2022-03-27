@@ -1,4 +1,6 @@
 
+server:
+  port: 30002
 
 config:
   # read all log files that has format of .txt
@@ -10,9 +12,9 @@ config:
 
   servers:
     - ip: 127.0.0.1
-      port: 112
+      port: 20001
       protocol: TCP
 
     - ip: 127.0.0.1
-      port: 222
+      port: 20002
       protocol: UDP

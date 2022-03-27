@@ -1,8 +1,7 @@
 package com.example.logReader.service;
 
 import com.example.logReader.config.LogReaderConfig;
-import com.example.logReader.entity.Destination;
-import lombok.Getter;
+import com.example.logReader.entity.ServerInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class ClientService {
 
     @PostConstruct
     public void init() {
-        List<Destination> dests = logReaderConfig.getServers();
+        List<ServerInfo> dests = logReaderConfig.getServers();
     }
 
 //    private void createClientByProtocol(List<D>)
