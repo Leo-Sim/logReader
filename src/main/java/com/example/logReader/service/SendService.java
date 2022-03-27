@@ -15,9 +15,11 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.netty.Connection;
 import reactor.netty.tcp.TcpClient;
+import reactor.netty.udp.UdpClient;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -64,21 +66,23 @@ public class SendService {
                     //get connection by protocol
                     Mono<Connection> connection = switch(server.getProtocol()) {
                         case TCP -> getTcpConnection(server);
+                        case UDP -> getUdpConnection(server);
                         default -> Mono.empty();
                     };
 
                     connection.subscribe(conn -> {
 
-                        Flux.just(list.toArray())
+                        String[] logArry = list.toArray(new String[list.size()]);
+                        Flux.just(logArry)
                                 .doOnComplete(() -> {
                                     // dispose connection when it finishes sending log.
                                     conn.dispose();
 
                                 })
                                 .subscribe(log -> {
-                                    System.out.println("log  : "  +log);
-                                    conn.outbound().sendString(Mono.just((String) log)).then().subscribe();
+                                    conn.outbound().sendString(Mono.just(log)).then().subscribe();
                                 });
+
                     });
                 });
     }
@@ -96,6 +100,20 @@ public class SendService {
                         .connect();
         return connection;
 
+    }
+
+    private Mono<Connection> getUdpConnection(ServerInfo server) {
+        Mono<Connection> connection = (Mono<Connection>) UdpClient.create()
+                            .host(server.getIp())
+                            .port(server.getPort())
+                            .doOnConnect(conn -> {
+                                logger.info("Connection made to {}:{}, via {}", server.getIp(), server.getPort(), server.getProtocol());
+                            })
+                            .doOnDisconnected(conn -> {
+                                logger.info("Connection is disposed. {}:{}, via {}", server.getIp(), server.getPort(), server.getProtocol());
+                            })
+                            .connect();
+        return connection;
     }
 
     
