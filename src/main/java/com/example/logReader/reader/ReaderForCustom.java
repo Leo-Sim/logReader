@@ -52,18 +52,21 @@ public class ReaderForCustom extends AbstractFileReader{
 
     public ReaderForCustom(String dirPath) {
         super(dirPath);
-        createLogSink = Sinks.many().unicast().onBackpressureBuffer();
+
 
     }
 
     @Override
     public void readFilesInDirectory(Consumer<List<String>> consumer) {
-        Flux<List<String>> flux = createLogSink.asFlux().bufferTimeout(BufferInfo.SEND_BUFFER_SIZE, BufferInfo.SEND_BUFFER_DURATION_SECOND);
-        flux.doOnNext(s -> logger.debug("create random log : {}", s)).subscribe(consumer);
 
         super.getFileList().stream()
                 .filter(f -> f.endsWith(".json"))
                 .forEach(f -> {
+                    // Declare sinks for each file. After finishing sending logs, it will send complete signal.
+                    createLogSink = Sinks.many().unicast().onBackpressureBuffer();
+                    Flux<List<String>> flux = createLogSink.asFlux().bufferTimeout(BufferInfo.SEND_BUFFER_SIZE, BufferInfo.SEND_BUFFER_DURATION_SECOND);
+                    flux.doOnNext(s -> logger.debug("create random log : {}", s)).subscribe(consumer);
+
                     Path fPath = Paths.get(f);
 
                     StringBuilder sb = new StringBuilder();
@@ -103,17 +106,19 @@ public class ReaderForCustom extends AbstractFileReader{
      * */
     private void createAndPushRandomLogs(String delimiter, LinkedHashMap<String, List<String>> map, int speed) {
 
-        IntStream.range(0, speed).forEach(i -> {
-            //create a log which is delimited by delimiter
-            String log = createLog(delimiter, map);
+        StringBuilder sb = new StringBuilder();
 
-            if(i == (speed - 1)) {
-                createLogSink.emitComplete(Sinks.EmitFailureHandler.FAIL_FAST);
-            } else {
-                createLogSink.emitNext(log, Sinks.EmitFailureHandler.FAIL_FAST);
-            }
+        int i =0;
+        while(i < speed) {
 
-        });
+            String log = createSingleLog(delimiter, map);
+            sb.append(log).append("\n");
+
+            i++;
+        }
+        createLogSink.emitNext(sb.toString(), Sinks.EmitFailureHandler.FAIL_FAST);
+        createLogSink.emitComplete(Sinks.EmitFailureHandler.FAIL_FAST);
+
     }
 
     /**
@@ -121,7 +126,7 @@ public class ReaderForCustom extends AbstractFileReader{
      * @param delimiter
      * @param map
      * */
-    private String createLog(String delimiter, LinkedHashMap<String, List<String>> map) {
+    private String createSingleLog(String delimiter, LinkedHashMap<String, List<String>> map) {
         return map.entrySet().stream()
                 .map(entry -> {
                     String randomVal = createRandomValue(entry.getValue());
