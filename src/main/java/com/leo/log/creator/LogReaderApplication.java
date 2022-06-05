@@ -1,4 +1,4 @@
-package com.example.logReader;
+package com.leo.log.creator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

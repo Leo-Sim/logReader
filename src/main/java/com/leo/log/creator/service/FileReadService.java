@@ -1,9 +1,9 @@
-package com.example.logReader.service;
+package com.leo.log.creator.service;
 
-import com.example.logReader.config.LogReaderConfig;
-import com.example.logReader.reader.AbstractFileReader;
-import com.example.logReader.reader.ReaderForCustom;
-import com.example.logReader.reader.ReaderForText;
+import com.leo.log.creator.config.LogReaderConfig;
+import com.leo.log.creator.reader.AbstractFileReader;
+import com.leo.log.creator.reader.ReaderForCustom;
+import com.leo.log.creator.reader.ReaderForText;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

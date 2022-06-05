@@ -1,4 +1,4 @@
-package com.example.logReader.reader;
+package com.leo.log.creator.reader;
 
 import lombok.Getter;
 import lombok.Setter;

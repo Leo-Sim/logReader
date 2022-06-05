@@ -1,6 +1,6 @@
-package com.example.logReader.config;
+package com.leo.log.creator.config;
 
-import com.example.logReader.entity.ServerInfo;
+import com.leo.log.creator.entity.ServerInfo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

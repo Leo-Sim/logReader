@@ -1,6 +1,6 @@
-package com.example.logReader.reader;
+package com.leo.log.creator.reader;
 
-import com.example.logReader.entity.BufferInfo;
+import com.leo.log.creator.entity.BufferInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;

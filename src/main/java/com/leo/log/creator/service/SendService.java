@@ -1,9 +1,8 @@
-package com.example.logReader.service;
+package com.leo.log.creator.service;
 
-import com.example.logReader.config.LogReaderConfig;
-import com.example.logReader.entity.BufferInfo;
-import com.example.logReader.entity.SendProtocol;
-import com.example.logReader.entity.ServerInfo;
+import com.leo.log.creator.config.LogReaderConfig;
+import com.leo.log.creator.entity.BufferInfo;
+import com.leo.log.creator.entity.ServerInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import reactor.netty.udp.UdpClient;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor

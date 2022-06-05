@@ -1,7 +1,7 @@
-package com.example.logReader.service;
+package com.leo.log.creator.service;
 
-import com.example.logReader.config.LogReaderConfig;
-import com.example.logReader.entity.ServerInfo;
+import com.leo.log.creator.config.LogReaderConfig;
+import com.leo.log.creator.entity.ServerInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
