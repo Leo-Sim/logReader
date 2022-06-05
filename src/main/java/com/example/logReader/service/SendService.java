@@ -77,7 +77,6 @@ public class SendService {
                                 .doOnComplete(() -> {
                                     // dispose connection when it finishes sending log.
                                     conn.dispose();
-
                                 })
                                 .subscribe(log -> {
                                     conn.outbound().sendString(Mono.just(log)).then().subscribe();
