@@ -10,6 +10,7 @@ import reactor.core.publisher.Sinks;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -51,6 +52,8 @@ abstract public class AbstractFileReader {
 
                 return list;
 
+            } catch (NoSuchFileException e) {
+                logger.debug("No files in path \"" + path + "\"");
             } catch (IOException e) {
                 e.printStackTrace();
                 logger.error("an error occured while reading files in {}", path);
@@ -71,4 +74,6 @@ abstract public class AbstractFileReader {
     }
 
     abstract public void readFilesInDirectory(Consumer<List<String>> consumer);
+
+    abstract public Flux<String> getLogs();
 }

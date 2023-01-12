@@ -93,6 +93,11 @@ public class ReaderForCustom extends AbstractFileReader{
                 });
     }
 
+    @Override
+    public Flux<String> getLogs() {
+        return null;
+    }
+
     /**
      * This method creates random log from given log information and push it into flux.
      * 'map' has key(field name) and list of its value.
